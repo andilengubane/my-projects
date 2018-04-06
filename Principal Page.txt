@@ -1,0 +1,531 @@
+@using System.Web.Mvc
+@using System.Web.Mvc.Ajax
+@using System.Web.Mvc.Html
+@using Kendo.Mvc.UI
+@using IDL.Utilities.Helpers
+@using MvcCheckBoxList.Model;
+@using IDL_Plugin_Principals.Models
+@inherits System.Web.Mvc.WebViewPage<IDL_Plugin_Principals.Models.PrincipalModel>
+
+<script>
+
+    function getModuleAttribs() {
+        var principalId = "@Model.ID.ToString()";
+
+        return {
+            principalId: principalId
+        }
+    }
+
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function onBegin() {
+        // $('#principalDetailsForm').spin();
+    }
+    function onShowTab(e) {
+
+        // $('#editPrincipal').spin(false);
+    }
+    function onSelectTab(e) {
+        //$('#editPrincipal').spin();
+    }
+</script>
+
+    @{Html.Kendo().TabStrip()
+        .Name("tsPrincipalMain")
+        .Events(events => events
+                    .Select("onSelectTab")
+                    .Show("onShowTab")
+                )
+        .Items(tabstrip =>
+        {
+            tabstrip.Add().Text("Principal Details")
+            .Selected(true)
+            .Content(
+            @<text>
+                @using (Ajax.BeginForm("SavePrincipal", "Principals", new AjaxOptions { HttpMethod = "POST", OnSuccess = "onSavePrincipalSuccess", OnBegin = "onBegin" }, new { enctype = "multipart/form-data", name = "principalDetailsForm", id = "principalDetailsForm", @class = "form-horizontal" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(model => model.ID, new { id = "hdnPrincipalID" })
+                    @Html.HiddenFor(model => model.NDD, new { id = "hdnNDD" })
+
+                    <br />
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">Principal Details</div>
+                        </div>
+                        <br />
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.Name)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.Name).Name("Name").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.Name)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.FullLegalName)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.FullLegalName).Name("FullLegalName").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.FullLegalName)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.PrincipalGLN)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.PrincipalGLN).Name("PrincipalGLN").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.PrincipalGLN)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.IsActive)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.CheckBoxFor(model => model.IsActive)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.ContactPerson)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.ContactPerson).Name("ContactPerson").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.ContactPerson)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.VatNo)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.VatNo).Name("VatNo").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.VatNo)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.Telephone)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.Telephone).Name("Telephone").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.Telephone)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.FaxNumber)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.FaxNumber).Name("FaxNumber").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.FaxNumber)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.Email)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.Email).Name("Email").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.Email)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.AddressLine1)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.AddressLine1).Name("AddressLine1").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.AddressLine1)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.AddressLine2)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.AddressLine2).Name("AddressLine2").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.AddressLine2)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.AddressLine3)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.AddressLine3).Name("AddressLine3").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.AddressLine3)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.AddressLine4)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.AddressLine4).Name("AddressLine4").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.AddressLine4)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.PostalCode)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(model => model.PostalCode).Name("PostalCode").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.PostalCode)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.City)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.City).Name("City").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.City)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.Province)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().DropDownListFor(model => model.Province).BindTo((List<System.Web.Mvc.SelectListItem>)ViewData["Province"]).OptionLabel("Select Province...").SelectedIndex(0)
+                                @Html.ValidationMessageFor(model => model.Province)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.Country)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().DropDownListFor(model => model.Country).BindTo((List<System.Web.Mvc.SelectListItem>)ViewData["Country"]).OptionLabel("Select Province...").SelectedIndex(0)
+                                @Html.ValidationMessageFor(model => model.Country)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.EscalationEmail)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.EscalationEmail).Name("EscalationEmail").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.EscalationEmail)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.AccountManagerIDL)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().DropDownListFor(model => model.AccountManagerIDL).BindTo((List<System.Web.Mvc.SelectListItem>)ViewData["User"]).OptionLabel("Select User...").SelectedIndex(0)
+                                @Html.ValidationMessageFor(model => model.AccountManagerIDL)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.AccountManagerClient)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.AccountManagerClient).Name("AccountManagerClient").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.AccountManagerClient)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.CallCenterNumber)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.CallCenterNumber).Name("CallCenterNumber").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.CallCenterNumber)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">Billing Details</div>
+                        </div>
+                        <br />
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.BillingEmailAddress)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.BillingEmailAddress).Name("BillingEmailAddress").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.BillingEmailAddress)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.BillingContactPerson)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.BillingContactPerson).Name("BillingContactPerson").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.BillingContactPerson)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.CreditCheck)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.CheckBoxFor(model => model.CreditCheck)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.BillingCity)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.BillingCity).Name("BillingCity").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.BillingCity)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.BillingProvince)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().DropDownListFor(model => model.BillingProvince).BindTo((List<System.Web.Mvc.SelectListItem>)ViewData["Province"]).OptionLabel("Select Province...").SelectedIndex(0)
+                                @Html.ValidationMessageFor(model => model.BillingProvince)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.BillingCountry)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().DropDownListFor(model => model.BillingCountry).BindTo((List<System.Web.Mvc.SelectListItem>)ViewData["Country"]).OptionLabel("Select Country...").SelectedIndex(0)
+                                @Html.ValidationMessageFor(model => model.BillingCountry)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.BillingAddress1)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.BillingAddress1).Name("BillingAddress1").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.BillingAddress1)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.BillingAddress2)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.BillingAddress2).Name("BillingAddress2").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.BillingAddress2)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.BillingAddress3)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.BillingAddress3).Name("BillingAddress3").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.BillingAddress3)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelForRequired(model => model.BillingAddress4)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.BillingAddress4).Name("BillingAddress4").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.BillingAddress4)
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="text-muted bootstrap-admin-box-title">System References</div>
+                        </div>
+                        <br />
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.RegistrationNumber)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.RegistrationNumber).Name("RegistrationNumber").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.RegistrationNumber)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.AllocatedNDD)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.AllocatedNDD).Name("AllocatedNDD").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.AllocatedNDD)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.DeliveryOrderType)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().DropDownListFor(model => model.DeliveryOrderType).BindTo((List<System.Web.Mvc.SelectListItem>)ViewData["DeliveryType"]).OptionLabel("Select Delivery Type...").SelectedIndex(0)
+                                @Html.ValidationMessageFor(model => model.DeliveryOrderType)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.ReceivingOrderType)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().DropDownListFor(model => model.ReceivingOrderType).BindTo((List<System.Web.Mvc.SelectListItem>)ViewData["RecievingType"]).OptionLabel("Select Delivery Type...").SelectedIndex(0)
+                                @Html.ValidationMessageFor(model => model.ReceivingOrderType)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.ProductFmailyCode)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.ProductFmailyCode).Name("ProductFmailyCode").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.ProductFmailyCode)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.PrincipalCode)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.PrincipalCode).Name("PrincipalCode").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.PrincipalCode)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.CutOffTime)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.CutOffTime).Name("CutOffTime").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.CutOffTime)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.WMSOwnerCode)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.WMSOwnerCode).Name("WMSOwnerCode").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.WMSOwnerCode)
+                            </div>
+                        </div>
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-label col-lg-2 text-left" style="padding:5px;">
+                                @Html.LabelFor(model => model.TMSReferenceCode)
+                            </div>
+                            <div class="editor-field col-lg-4">
+                                @Html.Kendo().TextBoxFor(m => m.TMSReferenceCode).Name("TMSReferenceCode").HtmlAttributes(new { style = "width:200px" }) <br />
+                                @Html.ValidationMessageFor(model => model.TMSReferenceCode)
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+
+                    if (Model.ID != 0)
+                    {
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="text-muted bootstrap-admin-box-title">Attachments</div>
+                                </div>
+                                <br/>
+                                <div class="row" style="padding-left:15px;">
+                                    <div class="col-lg-12" style="font-size:x-small;">
+                                        @{ Html.RenderAction("GetPrincipalAttachment", "Principals", new { principalId = Model.ID }); }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="text-muted bootstrap-admin-box-title">Distribution Centers</div>
+                                </div>
+                                <br />
+                                <div class="row" style="padding-left:15px;">
+                                    <div class="col-lg-12" style="font-size:x-small;">
+                                        @{Html.RenderAction("GetPrincipalDistributionCentersPartial", "Principals", new { principalID = Model.ID }); }
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+
+                        <div class="row" style="font-size:x-small; padding-left:15px;">
+                            <div class="editor-field col-lg-8 pull-right">
+                                <input type="submit" class="btn btn-primary" value="Save" onclick="savePrincipal()" />
+                            </div>
+                        </div>
+
+                        <div class="row" style="text-align:justify; vertical-align:top;">
+                            <div class="col-lg-4" style="padding-left:5px; color: limegreen;" id="spnFeedback">
+                                @if (ViewBag.principalResult != null)
+                                {
+                                    @ViewBag.principalResult
+                                }
+                            </div>
+                        </div>
+                    }
+                </text>);
+            tabstrip.Add().Text("Customers").LoadContentFrom("PrincipalCustomers", "Principals", new { id = Model.ID });
+        }).Render();
+                                            }
+
+    <script>
+        function savePrincipal() {
+            event.preventDefault();
+            
+            $("#principalDetailsForm").removeData("validator");
+            $("#principalDetailsForm").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse("#principalDetailsForm");
+
+            var isValid = $('#principalDetailsForm').valid()
+            $("#principalDetailsForm").submit();
+
+        }
+
+        function onSavePrincipalSuccess(data) {
+            var spnFeedback = document.getElementById("spnFeedback");
+            var message = "";
+
+            if (data.Success) {
+                spnFeedback.style.color = "limegreen";
+                message = data.Message;
+            } else {
+                spnFeedback.style.color = "red";
+                message = data.Error;
+            }
+            spnFeedback.innerHTML = message;
+        }
+
+
+        $(document).ready(function () {
+            var principalID = $("#hdnPrincipalID").val();
+
+            if (principalID > 0) {
+                $($("#tsPrincipalMain").data("kendoTabStrip").items()[1]).attr("style", "display:inline");
+            } else {
+                $($("#tsPrincipalMain").data("kendoTabStrip").items()[1]).attr("style", "display:none");
+            }
+        });
+    </script>
