@@ -1,0 +1,36 @@
+Sql server login details
+
+Sql Server on the 196.37.113.82
+Username :DX_Operations
+Password:P@ss_FMCGX_Operations!@#
+
+Notification Engine login credentials
+Username: andile.ngubane@fmcgx.com
+Password: Andile@123
+
+FMCGX
+https://fmcgx.com 
+Username:  andile.ngubane@fmcgx.com    
+Password:  andile12!@#
+
+My Computor login
+Password: adm!n123
+
+I have created you a read-only SQL user for now
+Username: Andile.Ngubane
+Password: andile123!@#
+
+CMS check system login details
+Username : DX_Support 
+Password : DX_adm!n123
+
+DX_+_)(*&^%$#@!
+
+login the Notification database (196.33.165.162)
+Username : FMCGX_Live
+Password : DX_FM3GX_L!v3!@#
+
+Administrator 196.33.165.162
+Password = DX_FMCGX_admin_Z!X@C#V$B%
+
+
